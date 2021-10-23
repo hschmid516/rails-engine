@@ -15,9 +15,11 @@ describe 'merchants API' do
     merchants[:data].each do |merchant|
       expect(merchant).to have_key(:id)
       expect(merchant[:id]).to be_an(String)
-
+      expect(merchant).to have_key(:attributes)
       expect(merchant[:attributes]).to have_key(:name)
       expect(merchant[:attributes][:name]).to be_a(String)
+      expect(merchant[:attributes]).to_not have_key(:created_at)
+      expect(merchant[:attributes]).to_not have_key(:updated_at)
     end
   end
 
@@ -78,5 +80,32 @@ describe 'merchants API' do
     merchants = JSON.parse(response.body, symbolize_names: true)[:data]
 
     expect(merchants.count).to eq(3)
+  end
+
+  it 'can get one merchant' do
+    merchant = create(:merchant)
+
+    get "/api/v1/merchants/#{merchant.id}"
+
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body, symbolize_names: true)
+
+    expect(merchant).to be_a(Hash)
+    expect(merchant[:data]).to be_a(Hash)
+    expect(merchant[:data]).to have_key(:id)
+    expect(merchant[:data][:id]).to be_an(String)
+    expect(merchant[:data][:attributes]).to have_key(:name)
+    expect(merchant[:data][:attributes][:name]).to be_a(String)
+    expect(merchant[:data][:attributes]).to_not have_key(:created_at)
+    expect(merchant[:data][:attributes]).to_not have_key(:updated_at)
+  end
+
+  it 'has 404 error if bad id' do
+    merchant = create(:merchant)
+
+    get "/api/v1/merchants/2"
+
+    expect(response).to be_successful
   end
 end
