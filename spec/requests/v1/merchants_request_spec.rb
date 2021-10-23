@@ -20,4 +20,30 @@ describe 'merchants API' do
     end
   end
 
+  it 'defaults to 20 merchants and page 1' do
+    create_list(:merchant, 50)
+
+    get '/api/v1/merchants'
+
+    expect(response).to be_successful
+
+    merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(merchants.count).to eq(20)
+
+    expect(merchants.first[:id].to_i).to eq(Merchant.first.id)
+  end
+
+  it 'can take per_page and page params to limit and offset' do
+    create_list(:merchant, 50)
+
+    get '/api/v1/merchants', params: { per_page: 10, page: 2}
+
+    expect(response).to be_successful
+
+    merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(merchants.count).to eq(10)
+    expect(merchants.first[:id].to_i).to eq(Merchant.offset(10).first.id)
+  end
 end
