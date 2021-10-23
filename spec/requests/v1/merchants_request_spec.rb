@@ -8,10 +8,11 @@ describe 'merchants API' do
 
     expect(response).to be_successful
 
-    merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+    merchants = JSON.parse(response.body, symbolize_names: true)
 
-    expect(merchants).to be_an(Array)
-    merchants.each do |merchant|
+    expect(merchants).to be_a(Hash)
+    expect(merchants[:data]).to be_an(Array)
+    merchants[:data].each do |merchant|
       expect(merchant).to have_key(:id)
       expect(merchant[:id]).to be_an(String)
 
