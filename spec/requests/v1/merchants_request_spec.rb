@@ -106,6 +106,7 @@ describe 'merchants API' do
 
     get "/api/v1/merchants/2"
 
-    expect(response).to be_successful
+    expect(response).to_not be_successful
+    expect(response).to have_http_status(404)
   end
 end

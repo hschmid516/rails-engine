@@ -16,8 +16,8 @@ class Api::V1::MerchantsController < ApplicationController
 
   rescue ActiveRecord::RecordNotFound
     render json: {
-      message: "your query could not be completed",
-      errors: ["no merchant found with id: #{params[:id]}"],
-      code: 404 }
+        message: "your query could not be completed",
+        errors: ["no merchant found with id: #{params[:id]}"],
+      }, status: 404
   end
 end
