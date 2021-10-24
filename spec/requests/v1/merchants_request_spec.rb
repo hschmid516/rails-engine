@@ -102,7 +102,7 @@ describe 'merchants API' do
   end
 
   it 'has 404 error if bad id' do
-    merchant = create(:merchant)
+    create(:merchant)
 
     get "/api/v1/merchants/2"
 
