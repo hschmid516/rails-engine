@@ -1,10 +1,12 @@
 class Api::V1::ItemsController < ApplicationController
   def index
-    merchant = Merchant.find(params[:merchant_id])
-    items = merchant.items
+    per_page = params.fetch(:per_page, 20)
+    if params[:page].to_i > 0
+      page =  per_page * (params.fetch(:page, 1).to_i - 1)
+    else
+      page = 0
+    end
+    items = Item.limit(per_page).offset(page)
     render json: ItemSerializer.new(items)
-
-  rescue ActiveRecord::RecordNotFound
-    no_merchant_error
   end
 end
