@@ -110,3 +110,22 @@ describe 'merchants API' do
     expect(response).to have_http_status(404)
   end
 end
+
+describe '1 or 0 merchants' do
+  it 'returns array if only 1 merchant' do
+    create(:merchant)
+    get '/api/v1/merchants'
+
+    merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(merchants).to be_an(Array)
+  end
+
+  it 'returns array if 0 merchants' do
+    get '/api/v1/merchants'
+
+    merchants = JSON.parse(response.body, symbolize_names: true)[:data]
+
+    expect(merchants).to be_an(Array)
+  end
+end
