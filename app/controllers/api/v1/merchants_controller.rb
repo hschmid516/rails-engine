@@ -15,9 +15,6 @@ class Api::V1::MerchantsController < ApplicationController
     render json: MerchantSerializer.new(merchant)
 
   rescue ActiveRecord::RecordNotFound
-    render json: {
-        message: "your query could not be completed",
-        errors: ["no merchant found with id: #{params[:id]}"],
-      }, status: 404
+    no_merchant_error
   end
 end
