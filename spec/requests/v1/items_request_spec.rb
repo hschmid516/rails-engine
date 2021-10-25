@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe 'items API' do
   before :each do
-    merchant = create(:merchant)
-    create_list(:item, 50, merchant: merchant)
+    @merchant = create(:merchant)
+    create_list(:item, 50, merchant: @merchant)
     get '/api/v1/items'
   end
 
@@ -105,8 +105,6 @@ describe 'items API' do
     expect(item[:data][:attributes][:merchant_id]).to be_an(Integer)
     expect(item[:data][:attributes]).to_not have_key(:created_at)
     expect(item[:data][:attributes]).to_not have_key(:updated_at)
-    expect(item[:data][:attributes]).to_not have_key(:created_at)
-    expect(item[:data][:attributes]).to_not have_key(:updated_at)
   end
 
   it 'has 404 error if bad id' do
@@ -114,6 +112,71 @@ describe 'items API' do
 
     expect(response).to_not be_successful
     expect(response).to have_http_status(404)
+  end
+
+  it 'can create a new item' do
+    item_params = ({
+                    name: "skis",
+                    description: "powder twigs",
+                    unit_price: 899.99,
+                    merchant_id: @merchant.id
+                  })
+    headers = {"CONTENT_TYPE": "application/json"}
+
+    post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+
+    created_item = Item.last
+    expect(response).to have_http_status(:created)
+    expect(response).to be_successful
+
+    item = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item[:data]).to have_key(:id)
+    expect(item[:data][:id]).to be_an(String)
+    expect(item[:data][:attributes]).to have_key(:name)
+    expect(item[:data][:attributes][:name]).to be_a(String)
+    expect(item[:data][:attributes]).to have_key(:description)
+    expect(item[:data][:attributes][:description]).to be_a(String)
+    expect(item[:data][:attributes]).to have_key(:unit_price)
+    expect(item[:data][:attributes][:unit_price]).to be_a(Float)
+    expect(item[:data][:attributes]).to have_key(:merchant_id)
+    expect(item[:data][:attributes][:merchant_id]).to be_an(Integer)
+    expect(created_item.name).to eq(item_params[:name])
+    expect(created_item.description).to eq(item_params[:description])
+    expect(created_item.unit_price).to eq(item_params[:unit_price])
+    expect(created_item.merchant_id).to eq(item_params[:merchant_id])
+  end
+
+  it 'it ignores additional attributes' do
+    item_params = ({
+                    name: "skis",
+                    description: "powder twigs",
+                    unit_price: 899.99,
+                    merchant_id: @merchant.id,
+                    dont_include: "this"
+                  })
+    headers = {"CONTENT_TYPE": "application/json"}
+
+    post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+
+    item = JSON.parse(response.body, symbolize_names: true)
+    expect(item[:data][:attributes]).to_not have_key(:dont_include)
+  end
+
+  it 'returns error if attributes are missing' do
+    item_params = ({
+                    description: "powder twigs",
+                    unit_price: 899.99,
+                    merchant_id: @merchant.id
+                  })
+    headers = {"CONTENT_TYPE": "application/json"}
+
+    post '/api/v1/items', headers: headers, params: JSON.generate(item: item_params)
+
+    error = JSON.parse(response.body, symbolize_names: true)
+
+    expect(error[:message]).to eq("item could not be created")
+    expect(error[:errors]).to eq(["Name can't be blank"])
   end
 end
 
