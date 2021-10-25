@@ -33,7 +33,7 @@ class Api::V1::ItemsController < ApplicationController
   def update
     item = Item.find(params[:id])
     item.update(item_params)
-    render json: ItemSerializer.new(item), status: :created
+    render json: ItemSerializer.new(item)
 
   rescue ActiveRecord::RecordNotFound
     no_object_error(params[:id])
