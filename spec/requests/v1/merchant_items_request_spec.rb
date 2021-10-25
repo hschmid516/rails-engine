@@ -32,9 +32,14 @@ describe 'merchant items API' do
     merchant = create(:merchant)
     create_list(:item, 3, merchant: merchant)
 
-    get "/api/v1/merchants/10000000/items"
+    get "/api/v1/merchants/10000/items"
 
     expect(response).to_not be_successful
     expect(response).to have_http_status(404)
+
+    error = JSON.parse(response.body, symbolize_names: true)
+
+    expect(error[:message]).to eq("your query could not be completed")
+    expect(error[:errors]).to eq(["no merchant found with id: 10000"])
   end
 end
