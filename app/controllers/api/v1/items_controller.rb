@@ -15,7 +15,7 @@ class Api::V1::ItemsController < ApplicationController
     render json: ItemSerializer.new(item)
 
   rescue ActiveRecord::RecordNotFound
-    no_merchant_error
+    no_object_error(params[:id])
   end
 
   def create
@@ -28,6 +28,15 @@ class Api::V1::ItemsController < ApplicationController
           errors: item.errors.full_messages,
         }, status: 404
     end
+  end
+
+  def update
+    item = Item.find(params[:id])
+    item.update(item_params)
+    render json: ItemSerializer.new(item), status: :created
+
+  rescue ActiveRecord::RecordNotFound
+    no_object_error(params[:id])
   end
 
   private
