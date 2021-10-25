@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe 'merchants API' do
-  it 'gets  merchants' do
+describe 'merchant items API' do
+  it 'gets merchants items' do
     merchant = create(:merchant)
     create_list(:item, 3, merchant: merchant)
 
