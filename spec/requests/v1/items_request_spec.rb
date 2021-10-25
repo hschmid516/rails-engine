@@ -178,6 +178,20 @@ describe 'items API' do
     expect(error[:message]).to eq("item could not be created")
     expect(error[:errors]).to eq(["Name can't be blank"])
   end
+
+  it 'can update an item' do
+    id = Item.last.id
+    old_name = Item.last.name
+    item_params = { name: "frisbee" }
+    headers = {"CONTENT_TYPE": "application/json"}
+
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate(item: item_params)
+    item = Item.find(id)
+
+    expect(response).to be_successful
+    expect(item.name).to_not eq(old_name)
+    expect(item.name).to eq(item_params[:name])
+  end
 end
 
 describe '1 or 0 items' do
