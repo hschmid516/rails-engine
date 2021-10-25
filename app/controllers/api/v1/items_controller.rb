@@ -39,6 +39,11 @@ class Api::V1::ItemsController < ApplicationController
     no_object_error(params[:id])
   end
 
+  def destroy
+    item = Item.find(params[:id])
+    item.destroy
+  end
+
   private
 
   def item_params
