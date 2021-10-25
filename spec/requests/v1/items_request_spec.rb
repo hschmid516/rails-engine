@@ -192,6 +192,20 @@ describe 'items API' do
     expect(item.name).to_not eq(old_name)
     expect(item.name).to eq(item_params[:name])
   end
+
+  # add sad paths
+
+  it 'can delete an item' do
+    expect(Item.count).to eq(50)
+
+    last_item = Item.last
+
+    delete "/api/v1/items/#{last_item.id}"
+
+    expect(response).to be_successful
+    expect(Item.count).to eq(49)
+    expect{Item.find(last_item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+  end
 end
 
 describe '1 or 0 items' do
