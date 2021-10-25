@@ -5,6 +5,6 @@ class Api::V1::MerchantItemsController < ApplicationController
     render json: ItemSerializer.new(items)
 
   rescue ActiveRecord::RecordNotFound
-    no_merchant_error
+    no_object_error(params[:merchant_id])
   end
 end

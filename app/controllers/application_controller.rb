@@ -1,8 +1,8 @@
 class ApplicationController < ActionController::API
-  def no_merchant_error
+  def no_object_error(id)
     render json: {
         message: "your query could not be completed",
-        errors: ["no merchant found with id: #{params[:merchant_id]}"],
+        errors: ["no object found with id: #{id}"],
       }, status: 404
   end
 end
