@@ -193,7 +193,14 @@ describe 'items API' do
     expect(item.name).to eq(item_params[:name])
   end
 
-  # add sad paths
+  it 'returns 404 if item not found' do
+    item_params = { name: "frisbee" }
+    headers = {"CONTENT_TYPE": "application/json"}
+
+    patch "/api/v1/items/10000", headers: headers, params: JSON.generate(item: item_params)
+
+    expect(response).to have_http_status(404)
+  end
 
   it 'can delete an item' do
     expect(Item.count).to eq(50)
@@ -203,8 +210,22 @@ describe 'items API' do
     delete "/api/v1/items/#{last_item.id}"
 
     expect(response).to be_successful
+    expect(response).to have_http_status(204)
+    expect(response.body).to be_empty
     expect(Item.count).to eq(49)
     expect{Item.find(last_item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it 'returns 404 if item not found' do
+    expect(Item.count).to eq(50)
+
+    last_item = Item.last
+
+    delete "/api/v1/items/10000"
+
+    expect(response).to have_http_status(404)
+    expect(Item.count).to eq(50)
+    expect(Item.last).to eq(last_item)
   end
 end
 
