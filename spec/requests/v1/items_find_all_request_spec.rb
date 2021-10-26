@@ -7,7 +7,7 @@ describe 'find items API' do
     create_list(:item, 20, merchant: merchant, unit_price: 20)
     create_list(:item, 30, merchant: merchant, unit_price: 30)
     create(:item, name: 'ski bindings', merchant: merchant, unit_price: 10)
-    create(:item, description: 'Snowboard Bindings', merchant: merchant, unit_price: 10)
+    create(:item, name: 'Snowboard Bindings', merchant: merchant, unit_price: 10)
   end
 
   it 'gets all items matching name search' do
@@ -20,7 +20,7 @@ describe 'find items API' do
     expect(items[:data]).to be_an Array
     expect(items[:data].length).to eq(2)
     expect(items[:data][0][:attributes][:name]).to eq('ski bindings')
-    expect(items[:data][1][:attributes][:description]).to eq('Snowboard Bindings')
+    expect(items[:data][1][:attributes][:name]).to eq('Snowboard Bindings')
   end
 
   it 'returns array if no match' do
