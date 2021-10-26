@@ -30,7 +30,7 @@ describe 'find merchants API' do
     expect(response).to have_http_status(400)
   end
 
-  it 'returns a successful response and error message for ' do
+  it 'returns a successful response and error message for no results' do
     get '/api/v1/merchants/find?name=wrongname'
 
     expect(response).to be_successful
