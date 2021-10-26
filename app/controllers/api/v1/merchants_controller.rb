@@ -15,6 +15,24 @@ class Api::V1::MerchantsController < ApplicationController
     render json: MerchantSerializer.new(merchant)
 
   rescue ActiveRecord::RecordNotFound
-    no_merchant_error
+    no_object_error(params[:id])
+  end
+
+  def find
+    merchant = Merchant.find_by_name(params[:name]&.downcase)
+    if !params[:name] || params[:name] == ''
+      render json: {
+          message: "merchant could not be found",
+          errors: "query params must be present and not empty",
+        }, status: 400
+    elsif !merchant
+      render json: {
+        data: {
+          message: "no merchant name found including '#{params[:name]}'"
+          }
+        }
+    else
+      render json: MerchantSerializer.new(merchant)
+    end
   end
 end
