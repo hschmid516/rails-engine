@@ -19,7 +19,7 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def find
-    merchant = Merchant.find_by_name(params[:name]&.downcase)
+    merchant = Merchant.find_by_name(params[:name])
     if !params[:name] || params[:name] == ''
       render json: {
           message: "merchant could not be found",
