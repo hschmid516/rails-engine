@@ -46,6 +46,29 @@ class Api::V1::ItemsController < ApplicationController
     no_object_error(params[:id])
   end
 
+  def find_all
+    items = Item.find_all_items(params)
+    if !params[:min_price] && !params[:max_price]
+      if !params[:name] || params[:name] == ''
+        render json: {
+            message: "items could not be found",
+            errors: "query params must be present and not empty",
+          }, status: 400
+      else
+        render json: ItemSerializer.new(items)
+      end
+    else
+      if params[:name]
+        render json: {
+            message: "items could not be found",
+            errors: "params cannot include name and max/min price",
+          }, status: 400
+      else
+        render json: ItemSerializer.new(items)
+      end
+    end
+  end
+
   private
 
   def item_params
