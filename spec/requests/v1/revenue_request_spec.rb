@@ -53,7 +53,7 @@ describe 'revenue API' do
     expect(response).to have_http_status(400)
   end
 
-  it 'returns error if quantity <= 1' do
+  it 'returns error if quantity < 1' do
     get '/api/v1/revenue/merchants?quantity=-1'
 
     expect(response).to have_http_status(400)
