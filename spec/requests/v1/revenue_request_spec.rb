@@ -6,8 +6,12 @@ describe 'revenue API' do
     item1 = create(:item, merchant: @merch1)
     cust1 = create(:customer)
     inv1 = @merch1.invoices.create(customer: cust1, status: 'shipped', created_at: '2021-05-15')
-    inv1.invoice_items.create(item: item1, quantity: 10, unit_price: 100)
+    inv5 = @merch1.invoices.create(customer: cust1, status: 'packaged', created_at: '2021-05-15')
+    inv1.invoice_items.create(item: item1, quantity: 5, unit_price: 100)
+    inv1.invoice_items.create(item: item1, quantity: 5, unit_price: 100)
+    inv5.invoice_items.create(item: item1, quantity: 5, unit_price: 100)
     inv1.transactions.create(result: 'success')
+    inv5.transactions.create(result: 'success')
 
     @merch2 = create(:merchant)
     item2 = create(:item, merchant: @merch2)
@@ -99,5 +103,39 @@ describe 'revenue API' do
     get '/api/v1/revenue?start=&end='
 
     expect(response).to have_http_status(400)
+  end
+
+  it 'gets total revenue for a merchant' do
+    get "/api/v1/revenue/merchants/#{@merch1.id}"
+
+    expect(response).to be_successful
+
+    merchants = JSON.parse(response.body, symbolize_names: true)
+
+    expect(merchants).to be_a Hash
+    expect(merchants).to eq(
+      {
+        "data": {
+          "id": "#{@merch1.id}",
+          "type": "merchant_revenue",
+          "attributes": {
+            "revenue": 1000
+          }
+        }
+      })
+  end
+
+  it 'errors if merchant not found' do
+    get "/api/v1/revenue/merchants/10000"
+
+    expect(response).to have_http_status(404)
+
+    error = JSON.parse(response.body, symbolize_names: true)
+
+    expect(error).to eq(
+      {
+        "errors": ["no object found with id: 10000"],
+          "message": "your query could not be completed"
+      })
   end
 end

@@ -51,4 +51,8 @@ RSpec.describe Merchant, type: :model do
   it '#revenue_for_range' do
     expect(Merchant.revenue_for_range('2021-05-01', '2021-05-31')[0].revenue).to eq(5000.0)
   end
+
+  it '#total_revenue' do
+    expect(@merch1.total_revenue[0].revenue).to eq(1000.0)
+  end
 end
