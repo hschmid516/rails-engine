@@ -10,10 +10,19 @@ class Merchant < ApplicationRecord
 
     def order_by_revenue(quantity)
        joins(invoices: :invoice_items)
-      .merge(Invoice.revenue_invoices)
+      .merge(Invoice.successful_invoices)
       .select('merchants.*, sum(quantity * invoice_items.unit_price) as revenue')
       .group(:id)
       .order(revenue: :desc)
+      .limit(quantity)
+    end
+
+    def most_items(quantity)
+       joins(invoices: { invoice_items: :item })
+      .merge(Invoice.successful_invoices)
+      .select('merchants.*, sum(quantity) as item_count')
+      .group(:id)
+      .order(item_count: :desc)
       .limit(quantity)
     end
   end
