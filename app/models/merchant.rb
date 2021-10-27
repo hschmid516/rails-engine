@@ -9,7 +9,8 @@ class Merchant < ApplicationRecord
     end
 
     def order_by_revenue(quantity)
-       joins(:invoice_items)
+       joins(invoices: :invoice_items)
+      .merge(Invoice.revenue_invoices)
       .select('merchants.*, sum(quantity * invoice_items.unit_price) as revenue')
       .group(:id)
       .order(revenue: :desc)
