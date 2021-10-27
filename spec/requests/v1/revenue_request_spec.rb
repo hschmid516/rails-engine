@@ -5,14 +5,14 @@ describe 'revenue API' do
     @merch1 = create(:merchant)
     item1 = create(:item, merchant: @merch1)
     cust1 = create(:customer)
-    inv1 = @merch1.invoices.create(customer: cust1, status: 'shipped')
+    inv1 = @merch1.invoices.create(customer: cust1, status: 'shipped', created_at: '2021-05-15')
     inv1.invoice_items.create(item: item1, quantity: 10, unit_price: 100)
     inv1.transactions.create(result: 'success')
 
     @merch2 = create(:merchant)
     item2 = create(:item, merchant: @merch2)
     cust2 = create(:customer)
-    inv2 = @merch2.invoices.create(customer: cust2, status: 'shipped')
+    inv2 = @merch2.invoices.create(customer: cust2, status: 'shipped', created_at: '2021-05-31')
     inv2.invoice_items.create(item: item2, quantity: 10, unit_price: 200)
     inv2.transactions.create(result: 'success')
 
@@ -55,6 +55,48 @@ describe 'revenue API' do
 
   it 'returns error if quantity < 1' do
     get '/api/v1/revenue/merchants?quantity=-1'
+
+    expect(response).to have_http_status(400)
+  end
+
+  it 'gets revenue accross date range' do
+    get '/api/v1/revenue?start=2021-05-01&end=2021-05-31'
+
+    expect(response).to be_successful
+
+    revenue = JSON.parse(response.body, symbolize_names: true)
+    expect(revenue).to be_a Hash
+    expect(revenue[:data]).to be_a Hash
+    expect(revenue[:data][:id]).to eq(nil)
+    expect(revenue[:data][:attributes][:revenue]).to eq(3000.0)
+  end
+
+  it 'errors if no start date' do
+    get '/api/v1/revenue?end=2021-05-31'
+
+    expect(response).to have_http_status(400)
+
+    get '/api/v1/revenue?end=2021-05-31&start='
+
+    expect(response).to have_http_status(400)
+  end
+
+  it 'errors if no end date' do
+    get '/api/v1/revenue?start=2021-05-31'
+
+    expect(response).to have_http_status(400)
+
+    get '/api/v1/revenue?start=2021-05-31&end='
+
+    expect(response).to have_http_status(400)
+  end
+
+  it 'errors if no start or end date' do
+    get '/api/v1/revenue'
+
+    expect(response).to have_http_status(400)
+
+    get '/api/v1/revenue?start=&end='
 
     expect(response).to have_http_status(400)
   end

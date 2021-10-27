@@ -14,14 +14,14 @@ RSpec.describe Merchant, type: :model do
     @merch1 = create(:merchant)
     item1 = create(:item, merchant: @merch1)
     cust1 = create(:customer)
-    inv1 = @merch1.invoices.create(customer: cust1, status: 'shipped')
+    inv1 = @merch1.invoices.create(customer: cust1, status: 'shipped', created_at: '2021-05-15')
     inv1.invoice_items.create(item: item1, quantity: 10, unit_price: 100)
     inv1.transactions.create(result: 'success')
 
     @merch2 = create(:merchant)
     item2 = create(:item, merchant: @merch2)
     cust2 = create(:customer)
-    inv2 = @merch2.invoices.create(customer: cust2, status: 'shipped')
+    inv2 = @merch2.invoices.create(customer: cust2, status: 'shipped', created_at: '2021-05-31')
     inv2.invoice_items.create(item: item2, quantity: 20, unit_price: 200)
     inv2.transactions.create(result: 'success')
 
@@ -46,5 +46,9 @@ RSpec.describe Merchant, type: :model do
 
   it '#most_items' do
     expect(Merchant.most_items(2)).to eq([@merch3, @merch2])
+  end
+
+  it '#revenue_range' do
+    expect(Merchant.revenue_range('2021-05-01', '2021-05-31')[0].revenue).to eq(5000.0)
   end
 end
