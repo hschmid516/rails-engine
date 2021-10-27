@@ -11,6 +11,15 @@ class Api::V1::Revenue::MerchantsController < ApplicationController
     end
   end
 
+  def show
+    merchant = Merchant.find(params[:id])
+    revenue = merchant.total_revenue[0]
+    render json: MerchantRevenueSerializer.new(revenue)
+
+  rescue ActiveRecord::RecordNotFound
+    no_object_error(params[:id])
+  end
+
   def date_range
     if (params[:start] && params[:end]) && !(params[:start].empty? || params[:end].empty?)
       revenue = Merchant.revenue_for_range(params[:start], params[:end])[0]
@@ -23,4 +32,3 @@ class Api::V1::Revenue::MerchantsController < ApplicationController
     end
   end
 end
-# if params.has_key?(:start) && params.has_key?(:end)
