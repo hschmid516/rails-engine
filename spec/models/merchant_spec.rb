@@ -48,7 +48,7 @@ RSpec.describe Merchant, type: :model do
     expect(Merchant.most_items(2)).to eq([@merch3, @merch2])
   end
 
-  it '#revenue_range' do
-    expect(Merchant.revenue_range('2021-05-01', '2021-05-31')[0].revenue).to eq(5000.0)
+  it '#revenue_for_range' do
+    expect(Merchant.revenue_for_range('2021-05-01', '2021-05-31')[0].revenue).to eq(5000.0)
   end
 end
