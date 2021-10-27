@@ -1,6 +1,6 @@
 class Api::V1::Revenue::MerchantsController < ApplicationController
   def index
-    if !params[:quantity] || params[:quantity].to_i < 1
+    if params[:quantity].to_i < 1
       render json: {
         message: "merchants could not be found",
         error: "query params must be present and not empty",
