@@ -4,7 +4,7 @@ class Invoice < ApplicationRecord
   has_many :invoice_items
   has_many :items, through: :invoice_items
 
-  def self.revenue_invoices
+  def self.successful_invoices
      joins(:transactions)
     .where(invoices: {status: 'shipped'}, transactions: {result: 'success'})
   end
