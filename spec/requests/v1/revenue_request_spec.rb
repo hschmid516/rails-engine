@@ -132,9 +132,6 @@ describe 'revenue API' do
 
     error = JSON.parse(response.body, symbolize_names: true)
 
-    expect(error).to eq(
-      {
-        "message": "Couldn't find Merchant with 'id'=10000"
-      })
+    expect(error[:message]).to eq("Couldn't find Merchant with 'id'=10000")
   end
 end
