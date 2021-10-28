@@ -13,26 +13,11 @@ class Api::V1::MerchantsController < ApplicationController
   def show
     merchant = Merchant.find(params[:id])
     render json: MerchantSerializer.new(merchant)
-  rescue ActiveRecord::RecordNotFound
-    no_object_error(params[:id])
-  end
-
-  def find
-    merchant = Merchant.find_by_name(params[:name])
-    if !params[:name] || params[:name] == ''
-      no_params_error
-    elsif !merchant
-      render json: {
-        data: { message: "no merchant name found including '#{params[:name]}'" }
-        }
-    else
-      render json: MerchantSerializer.new(merchant)
-    end
   end
 
   def most_items
     if params[:quantity].to_i < 1
-      no_params_error
+      bad_params_error
     else
       merchants = Merchant.most_items(params[:quantity])
       render json: ItemsSoldSerializer.new(merchants)
