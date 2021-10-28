@@ -1,8 +1,8 @@
 class Api::V1::Items::BaseController < ApplicationController
   private
 
-  def serialize(items)
-    render json: ItemSerializer.new(items)
+  def serialize(items, status = :ok)
+    render json: ItemSerializer.new(items), status: status
   end
 
   def find_item
