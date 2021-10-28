@@ -1,4 +1,4 @@
-class Api::V1::Merchants::SearchController < ApplicationController
+class Api::V1::Merchants::SearchController < Api::V1::Merchants::BaseController
   def index
     merchant = Merchant.find_by_name(params[:name])
     if bad_params
@@ -6,7 +6,7 @@ class Api::V1::Merchants::SearchController < ApplicationController
     elsif !merchant
       render json: { data: { message: "no results found" } }
     else
-      render json: MerchantSerializer.new(merchant)
+      serialize(merchant)
     end
   end
 end

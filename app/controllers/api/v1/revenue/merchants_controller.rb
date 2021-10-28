@@ -1,4 +1,4 @@
-class Api::V1::Revenue::MerchantsController < ApplicationController
+class Api::V1::Revenue::MerchantsController < Api::V1::Merchants::BaseController
   def index
     if params[:quantity].to_i < 1
       bad_params_error
@@ -9,8 +9,7 @@ class Api::V1::Revenue::MerchantsController < ApplicationController
   end
 
   def show
-    merchant = Merchant.find(params[:id])
-    revenue = merchant.total_revenue[0]
+    revenue = find_merchant.total_revenue[0]
     render json: MerchantRevenueSerializer.new(revenue)
   end
 

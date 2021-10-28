@@ -1,15 +1,10 @@
-class Api::V1::MerchantsController < ApplicationController
-  before_action only: [:show] do
-    @merchant = find_object(Merchant)
-  end
-
+class Api::V1::MerchantsController < Api::V1::Merchants::BaseController
   def index
-    merchants = paginate(Merchant)
-    serialize(merchants)
+    serialize(paginate(Merchant))
   end
 
   def show
-    serialize(@merchant)
+    serialize(find_merchant)
   end
 
   def most_items
@@ -19,11 +14,5 @@ class Api::V1::MerchantsController < ApplicationController
       merchants = Merchant.most_items(params[:quantity])
       render json: ItemsSoldSerializer.new(merchants)
     end
-  end
-
-  private
-
-  def serialize(merchants)
-    render json: MerchantSerializer.new(merchants)
   end
 end

@@ -1,6 +1,6 @@
-class Api::V1::ItemsController < ApplicationController
+class Api::V1::ItemsController < Api::V1::Items::BaseController
   before_action only: [:show, :update, :destroy] do
-    @item = find_object(Item)
+    @item = find_item
   end
 
   def index
@@ -30,9 +30,5 @@ class Api::V1::ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
-  end
-
-  def serialize(items)
-    render json: ItemSerializer.new(items)
   end
 end

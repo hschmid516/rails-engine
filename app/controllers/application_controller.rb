@@ -10,10 +10,6 @@ class ApplicationController < ActionController::API
     !params[:name] || params[:name] == ''
   end
 
-  def find_object(object)
-    object.find(params[:id])
-  end
-
   def paginate(object)
     per_page = params.fetch(:per_page, 20)
     if params[:page].to_i > 0
