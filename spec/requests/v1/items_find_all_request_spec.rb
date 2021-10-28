@@ -3,11 +3,11 @@ require 'rails_helper'
 describe 'find items API' do
   before :each do
     merchant = create(:merchant)
+    create(:item, name: 'ski bindings', merchant: merchant, unit_price: 10)
+    create(:item, name: 'Snowboard Bindings', merchant: merchant, unit_price: 10)
     create_list(:item, 8, merchant: merchant, unit_price: 10)
     create_list(:item, 20, merchant: merchant, unit_price: 20)
     create_list(:item, 30, merchant: merchant, unit_price: 30)
-    create(:item, name: 'ski bindings', merchant: merchant, unit_price: 10)
-    create(:item, description: 'Snowboard Bindings', merchant: merchant, unit_price: 10)
   end
 
   it 'gets all items matching name search' do
@@ -20,7 +20,7 @@ describe 'find items API' do
     expect(items[:data]).to be_an Array
     expect(items[:data].length).to eq(2)
     expect(items[:data][0][:attributes][:name]).to eq('ski bindings')
-    expect(items[:data][1][:attributes][:description]).to eq('Snowboard Bindings')
+    expect(items[:data][1][:attributes][:name]).to eq('Snowboard Bindings')
   end
 
   it 'returns array if no match' do
@@ -35,7 +35,18 @@ describe 'find items API' do
   end
 
   it 'gets all items matching min price search' do
-    get '/api/v1/items/find_all?min_price=20.50'
+    get '/api/v1/items/find_all?min_price=19.50'
+
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body, symbolize_names: true)
+
+    expect(items[:data]).to be_an Array
+    expect(items[:data].count).to eq(50)
+  end
+
+  it 'gets all items matching max price search' do
+    get '/api/v1/items/find_all?max_price=20.50'
 
     expect(response).to be_successful
 
@@ -45,15 +56,15 @@ describe 'find items API' do
     expect(items[:data].count).to eq(30)
   end
 
-  it 'gets all items matching max price search' do
-    get '/api/v1/items/find_all?max_price=19.50'
+  it 'gets all items between min and max' do
+    get '/api/v1/items/find_all?min_price=19.50&max_price=20.50'
 
     expect(response).to be_successful
 
     items = JSON.parse(response.body, symbolize_names: true)
 
     expect(items[:data]).to be_an Array
-    expect(items[:data].count).to eq(10)
+    expect(items[:data].count).to eq(20)
   end
 
   it 'gets error if params include name and min/max' do
