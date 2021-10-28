@@ -7,7 +7,7 @@ RSpec.describe Merchant, type: :model do
     merch1 = create(:merchant, name: 'Icelantic')
     merch2 = create(:merchant, name: 'Land Rover')
 
-    expect(Merchant.find_by_name('LaN')).to eq(merch1)
+    expect(Merchant.find_all_merchants('LaN').first).to eq(merch1)
   end
 
   before :each do

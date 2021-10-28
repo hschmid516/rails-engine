@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'find items API' do
   before :each do
     merchant = create(:merchant)
-    create(:item, name: 'ski bindings', merchant: merchant, unit_price: 10)
+    create(:item, name: 'Ski bindings', merchant: merchant, unit_price: 10)
     create(:item, name: 'Snowboard Bindings', merchant: merchant, unit_price: 10)
     create_list(:item, 8, merchant: merchant, unit_price: 10)
     create_list(:item, 20, merchant: merchant, unit_price: 20)
@@ -19,7 +19,7 @@ describe 'find items API' do
 
     expect(items[:data]).to be_an Array
     expect(items[:data].length).to eq(2)
-    expect(items[:data][0][:attributes][:name]).to eq('ski bindings')
+    expect(items[:data][0][:attributes][:name]).to eq('Ski bindings')
     expect(items[:data][1][:attributes][:name]).to eq('Snowboard Bindings')
   end
 
@@ -74,7 +74,8 @@ describe 'find items API' do
 
     error = JSON.parse(response.body, symbolize_names: true)
 
-    expect(error[:errors]).to eq("params cannot include name and max/min price")
+    expect(error[:error]).to eq("params cannot include name and max/min price")
+    expect(error[:message]).to eq("items could not be found")
   end
 
   it 'gets error if no params or query is empty' do
@@ -84,7 +85,7 @@ describe 'find items API' do
 
     error = JSON.parse(response.body, symbolize_names: true)
 
-    expect(error[:errors]).to eq("query params must be present and not empty")
+    expect(error[:message]).to eq("object could not be found")
 
     get '/api/v1/items/find_all?name='
 

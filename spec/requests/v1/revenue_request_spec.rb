@@ -132,10 +132,6 @@ describe 'revenue API' do
 
     error = JSON.parse(response.body, symbolize_names: true)
 
-    expect(error).to eq(
-      {
-        "errors": ["no object found with id: 10000"],
-          "message": "your query could not be completed"
-      })
+    expect(error[:message]).to eq("Couldn't find Merchant with 'id'=10000")
   end
 end

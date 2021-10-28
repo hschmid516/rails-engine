@@ -8,8 +8,8 @@ class Merchant < ApplicationRecord
                       .select('merchants.*, sum(quantity * invoice_items.unit_price) as revenue') }
 
   class << self
-    def find_by_name(query)
-      where("name ilike ?", "%#{query}%").order(:name).first
+    def find_all_merchants(query)
+      where("name ilike ?", "%#{query}%").order(:name)
     end
 
     def order_by_revenue(quantity)

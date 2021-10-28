@@ -1,15 +1,18 @@
 class ApplicationController < ActionController::API
-  def no_object_error(id)
-    render json: {
-        message: "your query could not be completed",
-        errors: ["no object found with id: #{id}"],
-      }, status: 404
+  include Response
+  include ExceptionHandler
+
+  def bad_params
+    !params[:name] || params[:name] == ''
   end
 
-  def no_params_error
-    render json: {
-        message: "merchant could not be found",
-        error: "query params must be present and not empty",
-      }, status: 400
+  def paginate(object)
+    per_page = params.fetch(:per_page, 20)
+    if params[:page].to_i > 0
+      page =  per_page * (params.fetch(:page, 1).to_i - 1)
+    else
+      page = 0
+    end
+    object.limit(per_page).offset(page)
   end
 end
