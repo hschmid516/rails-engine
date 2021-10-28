@@ -1,21 +1,15 @@
 class Api::V1::ItemsController < ApplicationController
+  before_action only: [:show, :update, :destroy] do
+    @item = find_object(Item)
+  end
+
   def index
-    per_page = params.fetch(:per_page, 20)
-    if params[:page].to_i > 0
-      page =  per_page * (params.fetch(:page, 1).to_i - 1)
-    else
-      page = 0
-    end
-    items = Item.limit(per_page).offset(page)
+    items = paginate(Item)
     render json: ItemSerializer.new(items)
   end
 
   def show
-    item = Item.find(params[:id])
-    render json: ItemSerializer.new(item)
-
-  rescue ActiveRecord::RecordNotFound
-    no_object_error(params[:id])
+    render json: ItemSerializer.new(@item)
   end
 
   def create
@@ -24,14 +18,12 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def update
-    item = Item.find(params[:id])
-    item.update!(item_params)
-    render json: ItemSerializer.new(item)
+    @item.update!(item_params)
+    render json: ItemSerializer.new(@item)
   end
 
   def destroy
-    item = Item.find(params[:id])
-    item.destroy
+    @item.destroy
   end
 
   private
