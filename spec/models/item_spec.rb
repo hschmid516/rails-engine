@@ -7,7 +7,7 @@ RSpec.describe Item, type: :model do
 
   it '#find_all_items' do
     merchant = create(:merchant)
-    item1 = create(:item, name: 'ski bindings', merchant: merchant, unit_price: 10)
+    item1 = create(:item, name: 'Ski bindings', merchant: merchant, unit_price: 10)
     item2 = create(:item, name: 'Snowboard Bindings', merchant: merchant, unit_price: 20)
     item3 = create(:item, name: 'boots', merchant: merchant, unit_price: 30)
     item4 = create(:item, name: 'helmet', merchant: merchant, unit_price: 30)
