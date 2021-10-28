@@ -5,11 +5,11 @@ class Api::V1::ItemsController < ApplicationController
 
   def index
     items = paginate(Item)
-    render json: ItemSerializer.new(items)
+    serialize(items)
   end
 
   def show
-    render json: ItemSerializer.new(@item)
+    serialize(@item)
   end
 
   def create
@@ -19,7 +19,7 @@ class Api::V1::ItemsController < ApplicationController
 
   def update
     @item.update!(item_params)
-    render json: ItemSerializer.new(@item)
+    serialize(@item)
   end
 
   def destroy
@@ -30,5 +30,9 @@ class Api::V1::ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(:name, :description, :unit_price, :merchant_id)
+  end
+
+  def serialize(items)
+    render json: ItemSerializer.new(items)
   end
 end

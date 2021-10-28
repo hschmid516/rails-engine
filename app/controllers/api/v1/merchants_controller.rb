@@ -5,11 +5,11 @@ class Api::V1::MerchantsController < ApplicationController
 
   def index
     merchants = paginate(Merchant)
-    render json: MerchantSerializer.new(merchants)
+    serialize(merchants)
   end
 
   def show
-    render json: MerchantSerializer.new(@merchant)
+    serialize(@merchant)
   end
 
   def most_items
@@ -19,5 +19,11 @@ class Api::V1::MerchantsController < ApplicationController
       merchants = Merchant.most_items(params[:quantity])
       render json: ItemsSoldSerializer.new(merchants)
     end
+  end
+
+  private
+
+  def serialize(merchants)
+    render json: MerchantSerializer.new(merchants)
   end
 end
