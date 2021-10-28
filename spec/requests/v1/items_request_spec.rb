@@ -175,8 +175,7 @@ describe 'items API' do
 
     error = JSON.parse(response.body, symbolize_names: true)
 
-    expect(error[:message]).to eq("item could not be created")
-    expect(error[:errors]).to eq(["Name can't be blank"])
+    expect(error[:message]).to eq("Validation failed: Name can't be blank")
   end
 
   it 'can update an item' do
@@ -198,6 +197,16 @@ describe 'items API' do
     headers = {"CONTENT_TYPE": "application/json"}
 
     patch "/api/v1/items/10000", headers: headers, params: JSON.generate(item: item_params)
+
+    expect(response).to have_http_status(404)
+  end
+
+  it 'returns 404 if bad merchant id' do
+    id = Item.last.id
+    item_params = { merchant_id: 1000 }
+    headers = {"CONTENT_TYPE": "application/json"}
+
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate(item: item_params)
 
     expect(response).to have_http_status(404)
   end

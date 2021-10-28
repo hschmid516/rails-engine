@@ -134,8 +134,7 @@ describe 'revenue API' do
 
     expect(error).to eq(
       {
-        "errors": ["no object found with id: 10000"],
-          "message": "your query could not be completed"
+        "message": "Couldn't find Merchant with 'id'=10000"
       })
   end
 end

@@ -74,7 +74,8 @@ describe 'find items API' do
 
     error = JSON.parse(response.body, symbolize_names: true)
 
-    expect(error[:errors]).to eq("params cannot include name and max/min price")
+    expect(error[:error]).to eq("params cannot include name and max/min price")
+    expect(error[:message]).to eq("items could not be found")
   end
 
   it 'gets error if no params or query is empty' do
@@ -84,7 +85,7 @@ describe 'find items API' do
 
     error = JSON.parse(response.body, symbolize_names: true)
 
-    expect(error[:errors]).to eq("query params must be present and not empty")
+    expect(error[:message]).to eq("object could not be found")
 
     get '/api/v1/items/find_all?name='
 

@@ -1,15 +1,12 @@
 class ApplicationController < ActionController::API
-  def no_object_error(id)
-    render json: {
-        message: "your query could not be completed",
-        error: ["no object found with id: #{id}"],
-      }, status: 404
+  include Response
+  include ExceptionHandler
+
+  def name_search
+    !params[:min_price] && !params[:max_price]
   end
 
-  def no_params_error
-    render json: {
-        message: "merchant could not be found",
-        error: "query params must be present and not empty",
-      }, status: 400
+  def bad_params
+    !params[:name] || params[:name] == ''
   end
 end

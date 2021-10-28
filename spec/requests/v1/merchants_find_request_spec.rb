@@ -40,7 +40,7 @@ describe 'find merchants API' do
     message =
       {
         data: {
-          message: "no merchant name found including 'wrongname'"
+          message: "no results found"
         }
       }
 
